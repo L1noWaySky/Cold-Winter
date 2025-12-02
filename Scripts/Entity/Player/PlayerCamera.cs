@@ -10,7 +10,7 @@ public partial class PlayerCamera : Camera3D
 	[Export] float FovAcceleration = 1f;
 	[Export] float FovDeceleration = 0.3f;
     [Export] float RotateStrength = Mathf.DegToRad(2f);
-    [Export] float RotateAcceleration = 50f;
+    [Export] float RotateAcceleration = 30f;
     float DefaultRotateZ = 0;
     float UpdateRotationZ = 0;
     
@@ -36,7 +36,7 @@ public partial class PlayerCamera : Camera3D
             this.Fov = Mathf.MoveToward(this.Fov, DefaultFov, FovDeceleration);
         }
 
-        UpdateRotationZ = Mathf.MoveToward(UpdateRotationZ, RotateStrength * PlayerDirection.X * PlayerSpeed, (float)delta);
+        UpdateRotationZ = Mathf.MoveToward(UpdateRotationZ, RotateStrength * PlayerDirection.X * PlayerSpeed * 0.5f, (float)delta);
         this.Rotation = Vector3.Forward * (float)Mathf.Lerp(
             this.Rotation.Z, 
             //RotateStrength * PlayerDirection.X * (PlayerSpeed),
