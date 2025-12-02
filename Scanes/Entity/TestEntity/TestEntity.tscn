@@ -1,0 +1,26 @@
+[gd_scene load_steps=6 format=3 uid="uid://d18qk0em0jgoc"]
+
+[ext_resource type="Script" uid="uid://gegp118l3srb" path="res://Scripts/Entity/TestEntity/TestEntity.cs" id="1_sk2kh"]
+[ext_resource type="PackedScene" uid="uid://bu3nhu4762pmy" path="res://Scanes/ScriptNode-Entity.tscn" id="2_sk2kh"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4h58e"]
+albedo_color = Color(0.197659, 0.630211, 0, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_4h58e"]
+material = SubResource("StandardMaterial3D_4h58e")
+radius = 0.45
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_4h58e"]
+radius = 0.45
+
+[node name="TestEntity" type="CharacterBody3D"]
+script = ExtResource("1_sk2kh")
+
+[node name="Script Node | Entity" parent="." instance=ExtResource("2_sk2kh")]
+Health = 5
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_4h58e")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_4h58e")
