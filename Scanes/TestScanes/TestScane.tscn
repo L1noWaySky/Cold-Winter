@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://c3gbpnxcprsqj"]
+[gd_scene load_steps=12 format=3 uid="uid://c3gbpnxcprsqj"]
 
 [ext_resource type="PackedScene" uid="uid://bhkjsibehd1fp" path="res://Scanes/Entity/Player/Player.tscn" id="1_ukvn6"]
 [ext_resource type="PackedScene" uid="uid://d18qk0em0jgoc" path="res://Scanes/Entity/TestEntity/TestEntity.tscn" id="2_5n7lj"]
@@ -30,6 +30,10 @@ data = PackedVector3Array(25, 0, 25, -25, 0, 25, 25, 0, -25, -25, 0, 25, -25, 0,
 [sub_resource type="PlaneMesh" id="PlaneMesh_jtmu5"]
 size = Vector2(50, 50)
 
+[sub_resource type="SphereMesh" id="SphereMesh_5n7lj"]
+radius = 0.3
+height = 0.6
+
 [node name="TestScane" type="Node3D"]
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
@@ -58,7 +62,7 @@ mesh = SubResource("BoxMesh_ukvn6")
 shape = SubResource("ConcavePolygonShape3D_urkp5")
 
 [node name="Player" parent="." instance=ExtResource("1_ukvn6")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.0622, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 26.4295, 0)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="."]
 
@@ -71,3 +75,7 @@ skeleton = NodePath("../..")
 
 [node name="TestEntity" parent="." instance=ExtResource("2_5n7lj")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.34594, 2.58344, -5.11983)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.34432, 0.5, -4.55936)
+mesh = SubResource("SphereMesh_5n7lj")
