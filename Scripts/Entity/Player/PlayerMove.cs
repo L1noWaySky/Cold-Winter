@@ -15,13 +15,14 @@ public partial class PlayerMove : CharacterBody3D
     [Export] float Jump = 4.5f;
     public float SpeedRealInTimeX = 0;
     public float SpeedRealInTimeZ = 0;
+    public bool IsSquat;
     Vector3 LastMove = Vector3.Zero;
      public Vector2 Direction = Vector2.Zero;
 
 	
 	public override void _Ready()
     {
-        
+        IsSquat = false;
     }
 
     public override void _PhysicsProcess(double delta)
@@ -36,16 +37,24 @@ public partial class PlayerMove : CharacterBody3D
         float currentSpeed =
             this.IsOnFloor()
             ?
-            (Input.IsActionPressed("CntrL") ? MaxSpeedOnSit : (Input.IsActionPressed("ShiftL") ? maxSpeedOnSprint : MaxSpeedOnFloor))
+            (IsSquat ? MaxSpeedOnSit : (Input.IsActionPressed("ShiftL") ? maxSpeedOnSprint : MaxSpeedOnFloor))
             :
             MaxSpeedUnFloor;
+        
+        if (Input.IsActionJustPressed("CntrL") && this.IsOnFloor())
+        {
+            IsSquat = !IsSquat;
+            GD.Print($"Squat: {IsSquat}");
+        }
 
 		if (!this.IsOnFloor())
         {
             _Velocity += this.GetGravity() *(float)delta;
+
+            if (IsSquat != false) IsSquat = false;
         }
 
-        if (Input.IsActionJustPressed("Space") && this.IsOnFloor())
+        if (Input.IsActionJustPressed("Space") && this.IsOnFloor() && IsSquat==false)
         {
             _Velocity.Y = Jump;
 

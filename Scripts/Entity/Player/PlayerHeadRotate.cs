@@ -41,7 +41,7 @@ public partial class PlayerHeadRotate : Node3D
             this.RotateY(-MouseMotionNow.Relative.X * (0.001f * Sens));
 
 			RotationX += -MouseMotionNow.Relative.Y * (0.001f * Sens);
-			RotationX = Mathf.Clamp(RotationX, Mathf.DegToRad(-75), Mathf.DegToRad(90));
+			RotationX = Mathf.Clamp(RotationX, Mathf.DegToRad(-80), Mathf.DegToRad(90));
 			Vector3 newRotate = PlayerCameraRotateX.Rotation;
 			newRotate.X = RotationX;
 			PlayerCameraRotateX.Rotation = newRotate;

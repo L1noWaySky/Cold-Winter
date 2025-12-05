@@ -1,10 +1,11 @@
-[gd_scene load_steps=12 format=3 uid="uid://bhkjsibehd1fp"]
+[gd_scene load_steps=14 format=3 uid="uid://bhkjsibehd1fp"]
 
 [ext_resource type="Script" uid="uid://dw2lokh18i4m8" path="res://Scripts/Entity/Player/PlayerMove.cs" id="1_6q85q"]
 [ext_resource type="PackedScene" uid="uid://bu3nhu4762pmy" path="res://Scanes/ScriptNode-Entity.tscn" id="2_egeqg"]
 [ext_resource type="Script" uid="uid://d0g7nyw5m4hji" path="res://Scripts/Entity/Player/PlayerCamera.cs" id="2_i5cyi"]
 [ext_resource type="Script" uid="uid://cutrlv6txpw0s" path="res://Scripts/Entity/Player/PlayerHeadRotate.cs" id="2_k1axl"]
 [ext_resource type="Script" uid="uid://d3rk0m1cutg5m" path="res://Scripts/Entity/Player/PlayerHand.cs" id="3_k1axl"]
+[ext_resource type="Script" uid="uid://dkm04kgvy8iwp" path="res://Scripts/Entity/Player/PlayerSquat.cs" id="3_tpyjt"]
 [ext_resource type="Script" uid="uid://b57gk30k1hl4g" path="res://Scripts/Entity/Player/PlayerRayCast.cs" id="6_68tcf"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_68u7d"]
@@ -13,7 +14,10 @@ radius = 0.45
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_6q85q"]
 radius = 0.45
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_68tcf"]
+
 [sub_resource type="BoxMesh" id="BoxMesh_tsfst"]
+material = SubResource("StandardMaterial3D_68tcf")
 size = Vector3(0.2, 0.2, 0.2)
 
 [sub_resource type="BoxMesh" id="BoxMesh_68u7d"]
@@ -29,8 +33,11 @@ Head = NodePath("Head")
 Health = 20
 LowHealthReactionIf = 3
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." node_paths=PackedStringArray("PlayerHead", "Player")]
 shape = SubResource("CapsuleShape3D_68u7d")
+script = ExtResource("3_tpyjt")
+PlayerHead = NodePath("../Head")
+Player = NodePath("..")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("CapsuleMesh_6q85q")
@@ -50,17 +57,19 @@ transform = Transform3D(1, 0, -1.86265e-09, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 script = ExtResource("3_k1axl")
 _Player = NodePath("../../..")
 
-[node name="TestItem" type="MeshInstance3D" parent="Head/HeadRotateX/Hand"]
-transform = Transform3D(0.893232, -0.315392, 0.320412, 0.407218, 0.869591, -0.279259, -0.190552, 0.379921, 0.90518, 0.368823, -0.321445, -0.866311)
-mesh = SubResource("BoxMesh_tsfst")
-
 [node name="HandVisual(Beta)" type="MeshInstance3D" parent="Head/HeadRotateX/Hand"]
 transform = Transform3D(1.21822, -1.22285, -0.428768, 0.725089, 1.35469, 0.87945, -0.1847, -2.74731, 0.624501, 0.505613, -0.536859, -0.656628)
 mesh = SubResource("BoxMesh_tsfst")
 
-[node name="HandVisual(Beta)2" type="MeshInstance3D" parent="Head/HeadRotateX/Hand"]
-transform = Transform3D(1.43384, -1.22285, -0.518062, 0.853427, 1.35469, 1.0626, -0.217392, -2.74731, 0.754559, 0.58354, -0.620271, -0.480628)
+[node name="HandVisual(Beta)2" type="MeshInstance3D" parent="Head/HeadRotateX/Hand/HandVisual(Beta)"]
+transform = Transform3D(1.177, 0, -6.89179e-07, 2.12342e-07, 1, -5.06639e-07, -3.12924e-07, 0, 1.20826, 0.000950992, -0.0635963, 0.0023329)
 mesh = SubResource("BoxMesh_tsfst")
+skeleton = NodePath("../..")
+
+[node name="TestItem" type="MeshInstance3D" parent="Head/HeadRotateX/Hand/HandVisual(Beta)/HandVisual(Beta)2"]
+transform = Transform3D(0.589691, 0.0732192, 0.00858697, -0.00157467, 0.0477966, -0.299399, -0.0883748, 0.698621, 0.111994, 0.0109485, 0.158755, 0.0700348)
+mesh = SubResource("BoxMesh_tsfst")
+skeleton = NodePath("../../..")
 
 [node name="Visual(CameraBeta)" type="MeshInstance3D" parent="Head/HeadRotateX"]
 transform = Transform3D(1, 0, -1.86265e-09, 0, 1, 0, 0, 0, 1, 9.31323e-10, 0, -0.261768)
