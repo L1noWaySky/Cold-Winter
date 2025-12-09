@@ -8,10 +8,10 @@
 [ext_resource type="Script" uid="uid://dkm04kgvy8iwp" path="res://Scripts/Entity/Player/PlayerSquat.cs" id="3_tpyjt"]
 [ext_resource type="Script" uid="uid://b57gk30k1hl4g" path="res://Scripts/Entity/Player/PlayerRayCast.cs" id="6_68tcf"]
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_68u7d"]
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_6q85q"]
 radius = 0.45
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_6q85q"]
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_68u7d"]
 radius = 0.45
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_68tcf"]
@@ -25,13 +25,22 @@ size = Vector3(0.76, 0.355, 0.705)
 
 [sub_resource type="BoxMesh" id="BoxMesh_k1axl"]
 
-[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("Head")]
+[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("Head", "CheckForSquat")]
 script = ExtResource("1_6q85q")
 Head = NodePath("Head")
+CheckForSquat = NodePath("CheckForSquat")
 
 [node name="Script Node | Entity" parent="." instance=ExtResource("2_egeqg")]
 Health = 20
 LowHealthReactionIf = 3
+
+[node name="Node3D" type="Node3D" parent="."]
+
+[node name="MainVisualNodes" type="Node3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MainVisualNodes"]
+mesh = SubResource("CapsuleMesh_6q85q")
+skeleton = NodePath("../..")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." node_paths=PackedStringArray("PlayerHead", "Player")]
 shape = SubResource("CapsuleShape3D_68u7d")
@@ -39,8 +48,9 @@ script = ExtResource("3_tpyjt")
 PlayerHead = NodePath("../Head")
 Player = NodePath("..")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-mesh = SubResource("CapsuleMesh_6q85q")
+[node name="CheckForSquat" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
+target_position = Vector3(0, 0.7, 0)
 
 [node name="Head" type="Node3D" parent="."]
 transform = Transform3D(0.999531, 0, -0.0306083, 0, 1, 0, 0.0306083, 0, 0.999531, 0, 0.5, 0)
@@ -52,10 +62,9 @@ script = ExtResource("2_k1axl")
 script = ExtResource("2_i5cyi")
 Player = NodePath("../../..")
 
-[node name="Hand" type="Node3D" parent="Head/HeadRotateX" node_paths=PackedStringArray("_Player")]
-transform = Transform3D(1, 0, -1.86265e-09, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+[node name="Hand" type="Node3D" parent="Head/HeadRotateX" node_paths=PackedStringArray("Player")]
 script = ExtResource("3_k1axl")
-_Player = NodePath("../../..")
+Player = NodePath("../../..")
 
 [node name="HandVisual(Beta)" type="MeshInstance3D" parent="Head/HeadRotateX/Hand"]
 transform = Transform3D(1.21822, -1.22285, -0.428768, 0.725089, 1.35469, 0.87945, -0.1847, -2.74731, 0.624501, 0.505613, -0.536859, -0.656628)
@@ -87,3 +96,5 @@ script = ExtResource("6_68tcf")
 [node name="Bag" type="MeshInstance3D" parent="Head/Visual(beta)"]
 transform = Transform3D(0.558488, 0, 0, 0, 0.700399, 0, 0, 0, 0.363524, 0, -0.276403, 0.572877)
 mesh = SubResource("BoxMesh_k1axl")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]

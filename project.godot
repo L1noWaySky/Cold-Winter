@@ -80,6 +80,10 @@ F={
 ]
 }
 
+[layer_names]
+
+3d_physics/layer_4="Стены и ограды для приседания"
+
 [rendering]
 
 renderer/rendering_method="mobile"

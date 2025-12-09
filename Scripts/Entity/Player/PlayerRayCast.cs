@@ -39,10 +39,8 @@ public partial class PlayerRayCast : RayCast3D
             if (this.HasNode(TakeZoneName))
             {
                 //GD.Print(1);
-                
-
                 Area3D TakeZone = this.GetChild<Area3D>(0);
-                TakeZone.GlobalPosition = this.GetCollisionPoint();
+                if (TakeZone.GlobalPosition != this.GetCollisionPoint()) { TakeZone.GlobalPosition = this.GetCollisionPoint(); /* GD.Print($"Take Zone Position is updated: {TakeZone.GlobalPosition}"); */}
             }
             else { InstanceTakeZone(TakeZoneRadius, TakeZoneDebugColor); GD.Print("Take Zone is Created!"); }
         }

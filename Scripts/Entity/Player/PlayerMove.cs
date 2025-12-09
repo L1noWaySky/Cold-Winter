@@ -4,6 +4,7 @@ using Godot;
 public partial class PlayerMove : CharacterBody3D
 {
 	[Export] Node3D Head;
+    [Export] RayCast3D CheckForSquat;
 	//[Export] float Speed = 10f;
     [Export] float acceleration = 20f;
     [Export] float accelerationAir = 3f;
@@ -17,13 +18,14 @@ public partial class PlayerMove : CharacterBody3D
     public float SpeedRealInTimeZ = 0;
     public bool IsSquat;
     Vector3 LastMove = Vector3.Zero;
-     public Vector2 Direction = Vector2.Zero;
+    public Vector2 Direction = Vector2.Zero;
 
 	
 	public override void _Ready()
     {
         IsSquat = false;
     }
+
 
     public override void _PhysicsProcess(double delta)
     {
@@ -43,8 +45,11 @@ public partial class PlayerMove : CharacterBody3D
         
         if (Input.IsActionJustPressed("CntrL") && this.IsOnFloor())
         {
-            IsSquat = !IsSquat;
-            GD.Print($"Squat: {IsSquat}");
+            if (!CheckForSquat.IsColliding()) { 
+                IsSquat = !IsSquat; 
+                GD.Print($"Squat: {IsSquat}");
+            }
+            
         }
 
 		if (!this.IsOnFloor())

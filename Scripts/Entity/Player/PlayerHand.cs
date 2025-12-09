@@ -3,17 +3,20 @@ using Godot;
 
 public partial class PlayerHand : Node3D
 {
-	[Export] CharacterBody3D _Player;
+	[Export] CharacterBody3D Player;
     [Export] float BobAmplitudeX = 0.015f;
     [Export] float BobAmplitudeY = 0.01f;
     [Export] float BobSpeed = 10f;
-    [Export] float BobReturnSpeed = 2f;
-    [Export] float HandMoveY = 0f;
-    [Export] float HandMoveX = 0f;
+    [Export] float BobReturnSpeed = 2f;    
     [Export] float HandRotateX = Mathf.DegToRad(9f);
+    [Export] float HandSquatPositionY = -0.06f;
     float _time = 0f;
     Vector3 DefaultPosition;
     Vector3 DefaultRotation;
+    float HandMoveZ = 0f;
+    float HandMoveX = 0f;
+    float HandMoveY = 0f;
+    float UpdateHandPositionY = 0;
 	public override void _Ready()
     {
         DefaultPosition = this.Position;
@@ -22,14 +25,19 @@ public partial class PlayerHand : Node3D
 
 	public override void _Process(double delta)
     {
-        float currentRotateX = DefaultRotation.X - HandRotateX;
+        bool PlayerIsSquat = (bool)Player.Get("IsSquat");
+        //UpdateHandPositionY = 
+        Vector3 CurrentDefaultPosition = 
+            PlayerIsSquat 
+            ? 
+            (DefaultPosition with { Y = DefaultPosition.Y + HandSquatPositionY })
+            :
+            DefaultPosition;
         //GD.Print($"{(int)_Player.Get("SpeedRealInTimeX")}, {(int)_Player.Get("SpeedRealInTimeZ")}");
-        float PlayerSpeed = (_Player.Velocity with { Y = 0 }).Length();
+        float PlayerSpeed = (Player.Velocity with { Y = 0 }).Length();
         if(PlayerSpeed > 0.5f)
         {
             _time += (float)delta * BobSpeed;
-
-            
         }
         else
         {
@@ -42,16 +50,18 @@ public partial class PlayerHand : Node3D
         }
 
         HandMoveX = Mathf.Sin(_time * 0.8f) * BobAmplitudeX * PlayerSpeed;
-        HandMoveY = Mathf.Abs(Mathf.Sin(_time * 0.8f) * BobAmplitudeY * PlayerSpeed);
-        Vector3 Bobing = new Vector3(HandMoveX, HandMoveY, this.Position.Z);
-
-        this.Position = DefaultPosition + Bobing;
+        HandMoveZ = Mathf.Abs(Mathf.Sin(_time * 0.8f) * BobAmplitudeY * PlayerSpeed);
+        Vector3 Bobing = new Vector3(HandMoveX, HandMoveZ, this.Position.Z);
+        
+        this.Position = CurrentDefaultPosition + Bobing;
 
         this.Rotation = Vector3.Right * Mathf.Lerp(
             this.Rotation.X, 
-            PlayerSpeed > 1f && _Player.IsOnFloor() ? (DefaultRotation.X - HandRotateX) : DefaultRotation.X,
+            PlayerSpeed > 1f && Player.IsOnFloor() ? (DefaultRotation.X - HandRotateX) : DefaultRotation.X,
             (float)delta * 7f
         );
+
+
         
         //GD.Print(HandMoveX);
     }
