@@ -9,7 +9,7 @@ public partial class PlayerHand : Node3D
     [Export] float BobSpeed = 10f;
     [Export] float BobReturnSpeed = 2f;    
     [Export] float HandRotateX = Mathf.DegToRad(9f);
-    [Export] float HandSquatPositionY = -0.06f;
+    [Export] float HandSquatPositionY = -0.08f;
     float _time = 0f;
     Vector3 DefaultPosition;
     Vector3 DefaultRotation;
@@ -26,14 +26,23 @@ public partial class PlayerHand : Node3D
 	public override void _Process(double delta)
     {
         bool PlayerIsSquat = (bool)Player.Get("IsSquat");
-        //UpdateHandPositionY = 
-        Vector3 CurrentDefaultPosition = 
-            PlayerIsSquat 
-            ? 
-            (DefaultPosition with { Y = DefaultPosition.Y + HandSquatPositionY })
-            :
-            DefaultPosition;
+
+        UpdateHandPositionY = Mathf.Lerp(
+            UpdateHandPositionY,
+            (
+                PlayerIsSquat
+                ?
+                DefaultPosition.Y + HandSquatPositionY
+                :
+                DefaultPosition.Y
+            ),
+            (float)delta * 3
+        );
+
+        Vector3 CurrentDefaultPosition = DefaultPosition;
+            
         //GD.Print($"{(int)_Player.Get("SpeedRealInTimeX")}, {(int)_Player.Get("SpeedRealInTimeZ")}");
+
         float PlayerSpeed = (Player.Velocity with { Y = 0 }).Length();
         if(PlayerSpeed > 0.5f)
         {
@@ -42,7 +51,6 @@ public partial class PlayerHand : Node3D
         else
         {
             _time = Mathf.Lerp(_time, 0f, (float)delta * BobReturnSpeed);
-            //_time = Mathf.MoveToward(_time, 0f, BobReturnSpeed * (float)delta);
         }
         if (_time < 0.01f)
         {
@@ -53,8 +61,9 @@ public partial class PlayerHand : Node3D
         HandMoveZ = Mathf.Abs(Mathf.Sin(_time * 0.8f) * BobAmplitudeY * PlayerSpeed);
         Vector3 Bobing = new Vector3(HandMoveX, HandMoveZ, this.Position.Z);
         
-        this.Position = CurrentDefaultPosition + Bobing;
+        this.Position = (CurrentDefaultPosition with { Y = UpdateHandPositionY}) + Bobing;
 
+        
         this.Rotation = Vector3.Right * Mathf.Lerp(
             this.Rotation.X, 
             PlayerSpeed > 1f && Player.IsOnFloor() ? (DefaultRotation.X - HandRotateX) : DefaultRotation.X,

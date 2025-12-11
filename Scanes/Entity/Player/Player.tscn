@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://bhkjsibehd1fp"]
+[gd_scene load_steps=15 format=3 uid="uid://bhkjsibehd1fp"]
 
 [ext_resource type="Script" uid="uid://dw2lokh18i4m8" path="res://Scripts/Entity/Player/PlayerMove.cs" id="1_6q85q"]
 [ext_resource type="PackedScene" uid="uid://bu3nhu4762pmy" path="res://Scanes/ScriptNode-Entity.tscn" id="2_egeqg"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://d3rk0m1cutg5m" path="res://Scripts/Entity/Player/PlayerHand.cs" id="3_k1axl"]
 [ext_resource type="Script" uid="uid://dkm04kgvy8iwp" path="res://Scripts/Entity/Player/PlayerSquat.cs" id="3_tpyjt"]
 [ext_resource type="Script" uid="uid://b57gk30k1hl4g" path="res://Scripts/Entity/Player/PlayerRayCast.cs" id="6_68tcf"]
+[ext_resource type="PackedScene" uid="uid://der3g3vvy52n8" path="res://Scanes/HUD/DebugHud/DebugHud.tscn" id="8_uxhl2"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_6q85q"]
 radius = 0.45
@@ -34,6 +35,10 @@ CheckForSquat = NodePath("CheckForSquat")
 Health = 20
 LowHealthReactionIf = 3
 
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="DebugHud" parent="UI" instance=ExtResource("8_uxhl2")]
+
 [node name="Node3D" type="Node3D" parent="."]
 
 [node name="MainVisualNodes" type="Node3D" parent="."]
@@ -42,15 +47,15 @@ LowHealthReactionIf = 3
 mesh = SubResource("CapsuleMesh_6q85q")
 skeleton = NodePath("../..")
 
+[node name="CheckForSquat" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
+target_position = Vector3(0, 0.7, 0)
+
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." node_paths=PackedStringArray("PlayerHead", "Player")]
 shape = SubResource("CapsuleShape3D_68u7d")
 script = ExtResource("3_tpyjt")
 PlayerHead = NodePath("../Head")
 Player = NodePath("..")
-
-[node name="CheckForSquat" type="RayCast3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
-target_position = Vector3(0, 0.7, 0)
 
 [node name="Head" type="Node3D" parent="."]
 transform = Transform3D(0.999531, 0, -0.0306083, 0, 1, 0, 0.0306083, 0, 0.999531, 0, 0.5, 0)

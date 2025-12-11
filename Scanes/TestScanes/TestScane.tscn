@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://c3gbpnxcprsqj"]
+[gd_scene load_steps=13 format=3 uid="uid://c3gbpnxcprsqj"]
 
 [ext_resource type="PackedScene" uid="uid://bhkjsibehd1fp" path="res://Scanes/Entity/Player/Player.tscn" id="1_ukvn6"]
 [ext_resource type="PackedScene" uid="uid://d18qk0em0jgoc" path="res://Scanes/Entity/TestEntity/TestEntity.tscn" id="2_5n7lj"]
@@ -33,6 +33,8 @@ size = Vector2(50, 50)
 [sub_resource type="SphereMesh" id="SphereMesh_5n7lj"]
 radius = 0.3
 height = 0.6
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_5n7lj"]
 
 [node name="TestScane" type="Node3D"]
 
@@ -90,3 +92,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.34594, 2.58344, -5.11983)
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.34432, 0.5, -4.55936)
 mesh = SubResource("SphereMesh_5n7lj")
+
+[node name="Area3D" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("SphereShape3D_5n7lj")

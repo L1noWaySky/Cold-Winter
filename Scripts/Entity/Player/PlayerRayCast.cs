@@ -3,16 +3,11 @@ using Godot;
 
 public partial class PlayerRayCast : RayCast3D
 {
+    [Signal] delegate void ItemCountEventHandler(int Count);
     [Export] float TakeZoneRadius = 0.3f;
     [Export] Color TakeZoneDebugColor = new Color(1,0.8f,0.2f,0.9f);
     
     string TakeZoneName = "TakeZoneForItems";
-
-
-	public override void _Ready()
-    {
-        
-    }
 
     void InstanceTakeZone(float _Radius, Color _DebugColor)
     {
@@ -32,22 +27,23 @@ public partial class PlayerRayCast : RayCast3D
         this.AddChild(TakeZone);
 
     }
-	public override void _Process(double delta)
+	
+    public override void _Process(double delta)
     {
         if (this.IsColliding())
         {
             if (this.HasNode(TakeZoneName))
             {
-                //GD.Print(1);
                 Area3D TakeZone = this.GetChild<Area3D>(0);
-                if (TakeZone.GlobalPosition != this.GetCollisionPoint()) { TakeZone.GlobalPosition = this.GetCollisionPoint(); /* GD.Print($"Take Zone Position is updated: {TakeZone.GlobalPosition}"); */}
+                if (TakeZone.GlobalPosition != this.GetCollisionPoint()) { TakeZone.GlobalPosition = this.GetCollisionPoint(); }
+
+                
             }
             else { InstanceTakeZone(TakeZoneRadius, TakeZoneDebugColor); GD.Print("Take Zone is Created!"); }
         }
         else
         {
             if (this.HasNode(TakeZoneName)) { this.GetChild<Node>(0).QueueFree(); GD.Print("Take Zone is Deleted"); }
-            //GD.Print(0);
         }
     }
 

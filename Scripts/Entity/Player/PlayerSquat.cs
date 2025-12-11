@@ -2,6 +2,7 @@ using Godot;
 
 public partial class PlayerSquat : CollisionShape3D
 {
+	#region properties
 	[Export] Node3D PlayerHead;
 	[Export] CharacterBody3D Player;
 	[Export] float CollisionSquatHeight = 1.3f;
@@ -18,7 +19,7 @@ public partial class PlayerSquat : CollisionShape3D
 
 	float SquatAcceleration = 2f;
 	float SquatDeceleration = 1f;
-
+	#endregion
 	public override void _Ready()
     {
 		CollisionDefaultHeight = ((CapsuleShape3D)this.Shape).Height;
@@ -34,39 +35,6 @@ public partial class PlayerSquat : CollisionShape3D
 	public override void _PhysicsProcess(double delta)
     {
 		bool PlayerIsSquat = (bool)Player.Get("IsSquat");
-		/* Первый казус
-        if (PlayerIsSquat == true)
-        {
-			//while (PlayerHead.Position.Y != HeadSquatPositionY)
-			{
-				
-			}
-			UpdateHeadSquatPositionY = Mathf.Lerp(
-					UpdateHeadSquatPositionY,
-					HeadSquatPositionY,
-					(float)delta * SquatAcceleration
-			);
-
-			PlayerHead.Position =  Vector3.Up * (PlayerHead.Position.Y!=HeadSquatPositionY ? UpdateCollisionSqautPositionY : PlayerHead.Position.Y);
-				
-        }
-		else if (PlayerIsSquat == false)
-        {
-            //while (PlayerHead.Position.Y != HeadDefaultPositionY)
-            {
-				
-            }
-
-			UpdateHeadSquatPositionY = Mathf.MoveToward(
-					UpdateHeadSquatPositionY,
-					HeadDefaultPositionY,
-					(float)delta * SquatDeceleration
-			);
-
-			PlayerHead.Position = Vector3.Up * (PlayerHead.Position.Y!=HeadDefaultPositionY ? UpdateCollisionSqautPositionY : PlayerHead.Position.Y);
-        }
-		*/
-
 		//Положение камеры по Y
 		UpdateHeadSquatPositionY = 
 			PlayerIsSquat
@@ -82,10 +50,9 @@ public partial class PlayerSquat : CollisionShape3D
 					HeadDefaultPositionY,
 					(float)delta * SquatDeceleration
 				);
-		if (PlayerHead.Position.Y!=UpdateHeadSquatPositionY) {PlayerHead.Position = Vector3.Up * (UpdateHeadSquatPositionY);} // Выглядит не очень, но ладно. -_-
-		//GD.Print(UpdateHeadSquatPositionY);
+		if (PlayerHead.Position.Y!=UpdateHeadSquatPositionY) {PlayerHead.Position = Vector3.Up * (UpdateHeadSquatPositionY);}
 
-		//Понижение колизии игрока
+		#region Понижение колизии игрока
 		UpdateCollisionSquatHeight = 
 			PlayerIsSquat
 			?
@@ -100,44 +67,26 @@ public partial class PlayerSquat : CollisionShape3D
 					CollisionDefaultHeight,
 					(float)delta * SquatDeceleration
 				);
+		#endregion
 		if (((CapsuleShape3D)this.Shape).Height != UpdateCollisionSquatHeight) {((CapsuleShape3D)this.Shape).Height = UpdateCollisionSquatHeight;}
-		//GD.Print(UpdateCollisionSquatHeight);
-
-		//Понижение позиции колизии игрока по Y
+ 
+		#region Понижение позиции колизии игрока по Y
 		UpdateCollisionSqautPositionY =
 			PlayerIsSquat
 			?
 				Mathf.MoveToward(
 					UpdateCollisionSqautPositionY,
 					-CollisionSqautPositionY,
-					(float)delta * (SquatAcceleration * 0.85f)
+					(float)delta 
 				)
 			:
 				Mathf.MoveToward(
 					UpdateCollisionSqautPositionY,
 					CollisionDefaultPositionY,
-					(float)delta * SquatDeceleration
+					(float)delta * 0.5f
 				);
+		#endregion
 		if (this.Position.Y != UpdateCollisionSqautPositionY) { this.Position = Vector3.Up * UpdateCollisionSqautPositionY; }
-
-		//Понижение визуальных узлов
-		/*
-		UpdateMVNPositionY =
-			PlayerIsSquat
-			?
-				Mathf.MoveToward(
-					UpdateMVNPositionY,
-					UpdateMVNPositionY,
-					(float)delta * SquatAcceleration
-				)
-			:
-				Mathf.MoveToward(
-					UpdateMVNPositionY,
-					MainVisualNodesDefaultPositionY,
-					(float)delta * SquatDeceleration
-				);
-		if (MainVisualNodes.Position.Y!=UpdateMVNPositionY) { MainVisualNodes.Position = Vector3.Up * UpdateMVNPositionY; }
-		*/
 	}
 
 }
