@@ -89,6 +89,8 @@ F3={
 [layer_names]
 
 3d_physics/layer_4="Стены и ограды для приседания"
+3d_physics/layer_10="Предметы"
+3d_navigation/layer_10="Предметы"
 
 [rendering]
 

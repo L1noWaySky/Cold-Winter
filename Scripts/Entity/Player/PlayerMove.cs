@@ -3,6 +3,7 @@ using Godot;
 
 public partial class PlayerMove : CharacterBody3D
 {
+    #region Свойства
 	[Export] Node3D Head;
     [Export] RayCast3D CheckForSquat;
 	//[Export] float Speed = 10f;
@@ -19,17 +20,21 @@ public partial class PlayerMove : CharacterBody3D
     public bool IsSquat;
     Vector3 LastMove = Vector3.Zero;
     public Vector2 Direction = Vector2.Zero;
-
+    #endregion
 	
 	public override void _Ready()
     {
         IsSquat = false;
     }
 
-
     public override void _PhysicsProcess(double delta)
     {
-		Vector3 _Velocity = this.Velocity;
+		#region Переменные и тд
+
+        Vector3 _Velocity = this.Velocity;
+
+        if(this.IsOnFloor() /* && (float)(this.Velocity with {Y = 0}).Length() != 0f */ ) 
+            LastMove = this.Velocity with {Y = 0};
         float currentSpeedAcceleration = 
             this.IsOnFloor()
             ?
@@ -52,6 +57,8 @@ public partial class PlayerMove : CharacterBody3D
             
         }
 
+        #endregion
+        #region Прыжок и гравитация
 		if (!this.IsOnFloor())
         {
             _Velocity += this.GetGravity() *(float)delta;
@@ -64,14 +71,13 @@ public partial class PlayerMove : CharacterBody3D
             _Velocity.Y = Jump;
 
         }
-
+        #endregion
+        #region Движение и направление 
         Direction = Input.GetVector("A", "D", "W", "S");
-        Vector3 MoveDirection = (Head.Basis * new Vector3(Direction.X, 0, Direction.Y)).Normalized();
 		
 
 		if (Direction != Vector2.Zero)
         {
-            //_Velocity = MoveDirection * Speed;
             SpeedRealInTimeX = Mathf.MoveToward(
                 SpeedRealInTimeX,
                 currentSpeed * Direction.X,
@@ -82,12 +88,9 @@ public partial class PlayerMove : CharacterBody3D
                 currentSpeed * Direction.Y,
                 currentSpeedAcceleration * (float)delta
             );
-            LastMove = new Vector3(MoveDirection.X, 0, MoveDirection.Y);
         }
         else
         {
-            //_Velocity.X = Mathf.MoveToward(Velocity.X, 0, 2f);
-			//_Velocity.Z = Mathf.MoveToward(Velocity.Z, 0, 2f);
             SpeedRealInTimeX = Mathf.MoveToward(
                 SpeedRealInTimeX,
                 0,
@@ -99,6 +102,8 @@ public partial class PlayerMove : CharacterBody3D
                 currentSpeedAcceleration * (float)delta
             );
         }
+        #endregion
+
         void PrintDebug()
         {
             GD.Print($"X: {(int)_Velocity.X}");
@@ -107,8 +112,8 @@ public partial class PlayerMove : CharacterBody3D
             GD.Print($"currentAcceleration:{currentSpeedAcceleration}");
         }
         //PrintDebug();
-        
-        //GD.Print($"{this.GetWallNormal()}");
+        GD.Print($"LastMove:{LastMove}");
+
         _Velocity = Head.Basis * new Vector3(SpeedRealInTimeX, _Velocity.Y, SpeedRealInTimeZ);
 		this.Velocity = _Velocity;
 		this.MoveAndSlide();
