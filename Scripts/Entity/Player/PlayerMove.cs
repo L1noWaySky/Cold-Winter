@@ -6,14 +6,18 @@ public partial class PlayerMove : CharacterBody3D
     #region Свойства
 	[Export] Node3D Head;
     [Export] RayCast3D CheckForSquat;
-	//[Export] float Speed = 10f;
+    [ExportGroup("Acceleration")]
+    [Export] float VelocityAcceleration = 10f;
     [Export] float acceleration = 20f;
     [Export] float accelerationAir = 3f;
+    [ExportGroup("Deceleration")]
     [Export] float deceleration = 50f;
+    [ExportGroup("Speed")]
     [Export] float MaxSpeedOnFloor = 5f;
     [Export] float MaxSpeedUnFloor = 3;
     [Export] float MaxSpeedOnSit = 3f;
     [Export] float maxSpeedOnSprint = 8f;
+    [ExportGroup("Jump")]
     [Export] float Jump = 4.5f;
     public float SpeedRealInTimeX = 0;
     public float SpeedRealInTimeZ = 0;
@@ -33,8 +37,13 @@ public partial class PlayerMove : CharacterBody3D
 
         Vector3 _Velocity = this.Velocity;
 
-        if(this.IsOnFloor() /* && (float)(this.Velocity with {Y = 0}).Length() != 0f */ ) 
-            LastMove = this.Velocity with {Y = 0};
+        if(this.IsOnFloor()) 
+            //LastMove = this.Velocity with {Y = 0};
+            LastMove = new Vector3(
+                Mathf.Clamp(this.Velocity.X, 0, 1),
+                0,
+                Mathf.Clamp(this.Velocity.Z, 0, 1)
+            );
         float currentSpeedAcceleration = 
             this.IsOnFloor()
             ?
@@ -112,10 +121,17 @@ public partial class PlayerMove : CharacterBody3D
             GD.Print($"currentAcceleration:{currentSpeedAcceleration}");
         }
         //PrintDebug();
-        GD.Print($"LastMove:{LastMove}");
 
-        _Velocity = Head.Basis * new Vector3(SpeedRealInTimeX, _Velocity.Y, SpeedRealInTimeZ);
-		this.Velocity = _Velocity;
+        _Velocity = Head.Basis * new Vector3(
+            currentSpeed * Direction.X,
+            _Velocity.Y,
+            currentSpeed * Direction.Y
+        );
+		this.Velocity =  new Vector3(
+            Mathf.Lerp(this.Velocity.X, _Velocity.X, (float)delta * VelocityAcceleration),
+            _Velocity.Y,
+            Mathf.Lerp(this.Velocity.Z, _Velocity.Z, (float)delta * VelocityAcceleration)
+        );
 		this.MoveAndSlide();
     }
 

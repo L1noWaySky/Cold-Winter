@@ -30,6 +30,7 @@ size = Vector3(0.76, 0.355, 0.705)
 script = ExtResource("1_6q85q")
 Head = NodePath("Head")
 CheckForSquat = NodePath("CheckForSquat")
+VelocityAcceleration = 2.0
 
 [node name="Script Node | Entity" parent="." instance=ExtResource("2_egeqg")]
 Health = 20

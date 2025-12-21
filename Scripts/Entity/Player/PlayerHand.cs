@@ -44,7 +44,7 @@ public partial class PlayerHand : Node3D
         //GD.Print($"{(int)_Player.Get("SpeedRealInTimeX")}, {(int)_Player.Get("SpeedRealInTimeZ")}");
 
         float PlayerSpeed = (Player.Velocity with { Y = 0 }).Length();
-        if(PlayerSpeed > 0.5f)
+        if(PlayerSpeed > 0.01f)
         {
             _time += (float)delta * BobSpeed;
         }
@@ -57,21 +57,19 @@ public partial class PlayerHand : Node3D
             _time = Mathf.Floor(_time);
         }
 
-        HandMoveX = Mathf.Sin(_time * 0.8f) * BobAmplitudeX * PlayerSpeed;
-        HandMoveZ = Mathf.Abs(Mathf.Sin(_time * 0.8f) * BobAmplitudeY * PlayerSpeed);
+        
+            HandMoveX = Mathf.Sin(_time * 0.8f) * BobAmplitudeX * PlayerSpeed;
+            HandMoveZ = Mathf.Abs(Mathf.Sin(_time * 0.8f) * BobAmplitudeY * PlayerSpeed);
+        
         Vector3 Bobing = new Vector3(HandMoveX, HandMoveZ, this.Position.Z);
         
         this.Position = (CurrentDefaultPosition with { Y = UpdateHandPositionY}) + Bobing;
 
         
         this.Rotation = Vector3.Right * Mathf.Lerp(
-            this.Rotation.X, 
-            PlayerSpeed > 1f && Player.IsOnFloor() ? (DefaultRotation.X - HandRotateX) : DefaultRotation.X,
+            this.Rotation.X,
+            PlayerSpeed > 1f && Player.IsOnFloor() ? (DefaultRotation.X - Mathf.DegToRad(PlayerSpeed*1.2f)) : DefaultRotation.X,
             (float)delta * 7f
         );
-
-
-        
-        //GD.Print(HandMoveX);
     }
 }

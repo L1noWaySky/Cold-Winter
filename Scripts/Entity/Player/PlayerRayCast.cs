@@ -49,7 +49,10 @@ public partial class PlayerRayCast : RayCast3D
                     ItemsInTakeZone = TakeZone.GetOverlappingAreas();
                     foreach (var item in ItemsInTakeZone)
                     {
-                        item.QueueFree();
+                        if (Input.IsActionJustPressed("E"))
+                        {
+                            item.QueueFree();
+                        }
                     }
                 }
                 else
