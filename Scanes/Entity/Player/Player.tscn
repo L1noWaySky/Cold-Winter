@@ -26,19 +26,22 @@ size = Vector3(0.76, 0.355, 0.705)
 
 [sub_resource type="BoxMesh" id="BoxMesh_k1axl"]
 
-[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("Head", "CheckForSquat")]
+[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("Head", "CheckForSquat", "_timer")]
 script = ExtResource("1_6q85q")
 Head = NodePath("Head")
 CheckForSquat = NodePath("CheckForSquat")
-VelocityAcceleration = 2.0
+_timer = NodePath("WaitTimer")
 
 [node name="Script Node | Entity" parent="." instance=ExtResource("2_egeqg")]
 Health = 20
 LowHealthReactionIf = 3
 
+[node name="WaitTimer" type="Timer" parent="."]
+
 [node name="UI" type="CanvasLayer" parent="."]
 
 [node name="DebugHud" parent="UI" instance=ExtResource("8_uxhl2")]
+metadata/_edit_use_anchors_ = true
 
 [node name="Node3D" type="Node3D" parent="."]
 
@@ -104,3 +107,5 @@ transform = Transform3D(0.558488, 0, 0, 0, 0.700399, 0, 0, 0, 0.363524, 0, -0.27
 mesh = SubResource("BoxMesh_k1axl")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+
+[connection signal="timeout" from="WaitTimer" to="." method="OnWaitTimerTimeout"]
