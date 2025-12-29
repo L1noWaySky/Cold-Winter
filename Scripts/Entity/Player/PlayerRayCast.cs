@@ -1,3 +1,4 @@
+using System.Linq;
 using Godot;
 
 
@@ -33,33 +34,54 @@ public partial class PlayerRayCast : RayCast3D
 
     }
 	
+    Godot.Collections.Array<Area3D> SortArrayToDistance(Godot.Collections.Array<Area3D> _selArray, int selLength, Vector3 _selPos)
+    {
+        Vector3 selPos = _selPos;
+        Godot.Collections.Array<Area3D> selArray = _selArray;
+        Area3D temp;
+        for (int i = 0; i < selLength - 1; i++)
+        {
+            for (int j = i + 1; j < selLength; j++)
+            {
+                float a = selArray[i].GlobalPosition.DistanceTo(selPos);
+                float b = selArray[j].GlobalPosition.DistanceTo(selPos);
+                if (a > b)
+                {
+                    temp = selArray[i];
+                    selArray[i] = selArray[j];
+                    selArray[j] = temp;
+                }
+            }
+        }
+        return selArray;
+        
+    }
     public override void _Process(double delta)
     {
         if (this.IsColliding())
         {
-            if (this.HasNode(TakeZoneName))
+            if (this.HasNode(TakeZoneName)) // Проверка существования узла
             {
                 Area3D TakeZone = this.GetNode<Area3D>(TakeZoneName);
                 Godot.Collections.Array<Area3D>? ItemsInTakeZone;
-                //Проверка существования узла
+
                 if (TakeZone.GlobalPosition != this.GetCollisionPoint()) { TakeZone.GlobalPosition = this.GetCollisionPoint(); }
-                //Проверка предметов внутри зоны
+                // Проверка предметов внутри зоны
                 if (TakeZone.HasOverlappingAreas())
                 {
-                    ItemsInTakeZone = TakeZone.GetOverlappingAreas();
-                    foreach (var item in ItemsInTakeZone)
-                    {
-                        if (Input.IsActionJustPressed("E"))
-                        {
-                            item.QueueFree();
-                        }
-                    }
+                    ItemsInTakeZone = SortArrayToDistance(
+                        TakeZone.GetOverlappingAreas(),
+                        (int)TakeZone.GetOverlappingAreas().LongCount(),
+                        this.GetCollisionPoint()
+                    );
+                    Area3D selected = ItemsInTakeZone[0];
+                    
+                    if (Input.IsActionJustPressed("E")) TakeItem(selected);
                 }
                 else
                 {
                     ItemsInTakeZone = null;
                 }
-                GD.Print(ItemsInTakeZone);
             }
             else { InstanceTakeZone(TakeZoneRadius, TakeZoneDebugColor); GD.Print("Take Zone is Created!"); }
         }
@@ -67,6 +89,11 @@ public partial class PlayerRayCast : RayCast3D
         {
             if (this.HasNode(TakeZoneName)) { this.GetChild<Node>(0).QueueFree(); GD.Print("Take Zone is Deleted"); }
         }
+    }
+
+    void TakeItem(Area3D _item)
+    {
+        _item.QueueFree();
     }
 
 	
