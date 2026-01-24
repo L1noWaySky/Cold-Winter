@@ -38,6 +38,8 @@ public partial class PlayerMove : CharacterBody3D
     protected bool IsRuning { get; private set; }
     protected bool CanControl { get; set; }
     protected bool CanEnduranceRecovery { get; private set; }
+    protected float SpeedY { get => (this.Velocity with {X = 0, Z = 0}).Length(); }
+    protected float SpeedXZ { get => (this.Velocity with { Y = 0 }).Length(); }
     Vector3 LastMove = Vector3.Zero;
     protected Vector2 Direction {get; private set;}
     float currentEndurance;
@@ -116,7 +118,7 @@ public partial class PlayerMove : CharacterBody3D
         {
             if (!CheckForSquat.IsColliding()) { 
                 IsSquat = !IsSquat; 
-                GD.Print($"Squat: {IsSquat}");
+                /* GD.Print($"Squat: {IsSquat}"); */
             }
             
         }
@@ -128,7 +130,7 @@ public partial class PlayerMove : CharacterBody3D
             :
             false;
         IsRuning = 
-            (this.Velocity with {Y=0}).Length() > 1f && Direction!=Vector2.Zero && Input.IsActionPressed("ShiftL")
+            (this.Velocity with {Y=0}).Length() > 3.2f && Direction!=Vector2.Zero && Input.IsActionPressed("ShiftL")
             ?
             true
             :
@@ -188,10 +190,11 @@ public partial class PlayerMove : CharacterBody3D
             //GD.Print($"Z: {(int)_Velocity.Z}");
             //GD.Print($"LastMove:{LastMove}");
             //GD.Print($"currentAcceleration:{currentVelocityAcceleration}");
-            GD.Print($"CurrentEndurance:{CurrentEndurance}");
-            GD.Print($"Can Endurance Recovery: {CanEnduranceRecovery}");
+            //GD.Print($"CurrentEndurance:{CurrentEndurance}");
+            //GD.Print($"Can Endurance Recovery: {CanEnduranceRecovery}");
+            GD.Print($"Velocity: {this.Velocity}");
         }
-        PrintDebug();
+        //PrintDebug();
 
         
 		this.Velocity =  new Vector3(
@@ -199,6 +202,8 @@ public partial class PlayerMove : CharacterBody3D
             _Velocity.Y,
             Mathf.Lerp(this.Velocity.Z, _Velocity.Z, (float)delta * currentVelocityAcceleration)
         );
+        
+        
 		this.MoveAndSlide();
     }
 

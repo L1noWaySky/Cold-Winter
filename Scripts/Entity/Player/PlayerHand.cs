@@ -4,10 +4,10 @@ using Godot;
 public partial class PlayerHand : Node3D
 {
 	[Export] CharacterBody3D Player;
-    [Export] float BobAmplitudeX = 0.015f;
-    [Export] float BobAmplitudeY = 0.01f;
-    [Export] float BobSpeed = 10f;
-    [Export] float BobReturnSpeed = 2f;    
+    [Export] float BobAmplitudeX = 0.005f;
+    [Export] float BobAmplitudeY = 0.003f;
+    [Export] float timeUpdateSpeed = 10f;
+    [Export] float TimeReturnSpeed = 2f;    
     [Export] float HandRotateX = Mathf.DegToRad(9f);
     [Export] float HandSquatPositionY = -0.08f;
     float _time = 0f;
@@ -23,9 +23,11 @@ public partial class PlayerHand : Node3D
         DefaultRotation = this.Rotation;
     }
 
-	public override void _Process(double delta)
+	public override void _PhysicsProcess(double delta)
     {
+        float PlayerSpeed = (float)Player.Get("SpeedXZ");
         bool PlayerIsSquat = (bool)Player.Get("IsSquat");
+        bool PlayerIsMove = (bool)Player.Get("IsMoving");
 
         UpdateHandPositionY = Mathf.Lerp(
             UpdateHandPositionY,
@@ -43,14 +45,14 @@ public partial class PlayerHand : Node3D
             
         //GD.Print($"{(int)_Player.Get("SpeedRealInTimeX")}, {(int)_Player.Get("SpeedRealInTimeZ")}");
 
-        float PlayerSpeed = (Player.Velocity with { Y = 0 }).Length();
+        
         if(PlayerSpeed > 0.01f)
         {
-            _time += (float)delta * BobSpeed;
+            _time += (float)delta * timeUpdateSpeed;
         }
         else
         {
-            _time = Mathf.Lerp(_time, 0f, (float)delta * BobReturnSpeed);
+            _time = Mathf.Lerp(_time, 0f, (float)delta * TimeReturnSpeed);
         }
         if (_time < 0.01f)
         {
@@ -58,8 +60,8 @@ public partial class PlayerHand : Node3D
         }
 
         
-            HandMoveX = Mathf.Sin(_time * 0.8f) * BobAmplitudeX * PlayerSpeed;
-            HandMoveZ = Mathf.Abs(Mathf.Sin(_time * 0.8f) * BobAmplitudeY * PlayerSpeed);
+        HandMoveX = Mathf.Sin(_time * 0.8f) * BobAmplitudeX * PlayerSpeed;
+        HandMoveZ = Mathf.Abs(Mathf.Sin(_time * 0.8f) * BobAmplitudeY * PlayerSpeed);
         
         Vector3 Bobing = new Vector3(HandMoveX, HandMoveZ, this.Position.Z);
         

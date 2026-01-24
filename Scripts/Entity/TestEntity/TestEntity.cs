@@ -3,24 +3,28 @@ using Godot;
 
 public partial class TestEntity : CharacterBody3D
 {
-	public override void _Ready()
-	{
-	}
-	public override void _Process(double delta)
-	{
-	}
+	[Export] public Node scr;
+	[Export] public Node3D Selects;
 
-    public override void _PhysicsProcess(double delta)
+    public override void _Process(double delta)
     {
-        Vector3 _Velocity = this.Velocity;
+        base._Process(delta);
 
-		if (!this.IsOnFloor())
-        {
-            _Velocity += this.GetGravity() *(float)delta;
-        }
+		
+    }
 
-		this.Velocity = _Velocity;
-		this.MoveAndSlide();
+
+    public override void _Input(InputEvent @event)
+    {
+        base._Input(@event);
+
+		if (@event.IsPressed())
+		{
+			if (@event.IsActionPressed("F"))
+			{
+				scr.Call("TakeDamage", 1, new Vector3(0,5,10));
+			}
+		}
     }
 
 }

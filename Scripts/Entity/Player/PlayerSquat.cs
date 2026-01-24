@@ -6,7 +6,7 @@ public partial class PlayerSquat : CollisionShape3D
 	[Export] Node3D PlayerHead;
 	[Export] CharacterBody3D Player;
 	[Export] float CollisionSquatHeight = 1.3f;
-	[Export] float CollisionSqautPositionY = 0.35f;
+	[Export] float CollisionSqautPositionY = 0.2f; //0.35
 	float CollisionDefaultHeight;
 	float CollisionDefaultPositionY;
 	float HeadSquatPositionY = 0f;

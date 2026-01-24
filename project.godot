@@ -93,10 +93,13 @@ E={
 
 [layer_names]
 
+3d_render/layer_5="Hand"
 3d_physics/layer_4="Стены и ограды для приседания"
+3d_physics/layer_9="Объекты"
 3d_physics/layer_10="Предметы"
 3d_navigation/layer_10="Предметы"
 
 [rendering]
 
+textures/canvas_textures/default_texture_filter=0
 renderer/rendering_method="mobile"

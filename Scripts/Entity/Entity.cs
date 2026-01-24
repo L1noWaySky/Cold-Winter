@@ -1,47 +1,63 @@
+// ! Этот скрипт работает лишь с родителем типа Charapter Body 3D!
+
 using Godot;
 
-public partial class Entity : Node
+public partial class Entity : ScriptWithResource<EntityR>
 {
-    [Signal] public delegate void eveEventHandler();
+    [Signal] delegate void DamagedEventHandler();
 
- 	[Export] int Health = 0;
-    [Export] int LowHealthReactionIf = 0;
+    [Export] public new EntityR Data
+    {
+        get => base.Data;
+        set => base.Data = value;
+    }
+    [Export] public float ProtectedTime = 0.5f;
 
-	CharacterBody3D This;
+
+	public CharacterBody3D This;
+    float _time; float time
+    {
+        get => _time;
+        set
+        {
+            if(value==ProtectedTime) return;
+            value = _time;
+        }
+    }
+    bool Protected = false;
 
 	public override void _Ready()
     {
-        This = this.GetParent<CharacterBody3D>();
-    }
-
-	
-	public override void _Process(double delta)
-    {
-        if (this.Health <= LowHealthReactionIf) {LowHealthReaction();}
-        if (this.Health <= 0) { Die(); }
-
-
-    }
-
-	public void Damage(int Damage)
-    {
-        this.Health = this.Health - Damage;
-    }
-
-	public void Damage(int Damage, Vector3 PushRotate)
-    {
-        this.Health = this.Health - Damage;
-
-		This.Velocity = PushRotate;
-    }
-
-    public void LowHealthReaction()
-    {
+        base._Ready();
         
+        This = this.GetParent<CharacterBody3D>();
+        
+
+        Data.Die += Die;
+        Data.HealthIsLow += LowHealthReaction;
     }
 
-	public void Die()
+    public void TakeDamage(int damage)
     {
-        GD.Print($"{This.Name} is Die");
+        if (Protected == false)
+        {
+            Data.Damage(damage);
+            this.EmitSignal(SignalName.Damaged);
+        }
     }
+    public void TakeDamage(int damage, Vector3 PushVelocity)
+    {
+        this.TakeDamage(damage);
+        This.Velocity = PushVelocity;
+    }
+    public virtual void LowHealthReaction()
+	{
+		GD.Print($"{Data.Name} low health");
+	}
+	public virtual void Die()
+	{
+		GD.Print($"{Data.Name} is die");
+        This.QueueFree();
+	}
+
 }

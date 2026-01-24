@@ -1,8 +1,9 @@
 using Godot;
 
 
-public partial class Item : Node
+public partial class Item : ScriptWithResource<ItemR>
 {
-	[Export] string? ItemName;
-	[Export] int[] ItemWeight = {0, 0};
+
+	
+
 }

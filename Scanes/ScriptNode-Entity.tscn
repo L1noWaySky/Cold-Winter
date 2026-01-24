@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://bu3nhu4762pmy"]
+[gd_scene load_steps=2 format=3 uid="uid://b8a6m50og5lyx"]
 
 [ext_resource type="Script" uid="uid://c2fo50c1ku5bk" path="res://Scripts/Entity/Entity.cs" id="1_4jwuj"]
 

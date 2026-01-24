@@ -4,6 +4,10 @@ using Godot;
 public partial class PlayerCamera : Camera3D
 {
 	[Export] CharacterBody3D Player;
+    [Export] float timeUpdateSpeed = 10f;
+    [Export] float TimeReturnSpeed = 2f;
+    [Export] float BobAmplitudeX = 0.015f;
+    [Export] float BobAmplitudeY = 0.01f;
 	[Export] float DefaultFov = 75f;
 	[Export] float SprintFov = 80f;
 	[Export] float SitFov = 70f;
@@ -17,6 +21,12 @@ public partial class PlayerCamera : Camera3D
     float UpdateRotationZ = 0;
     float UpdateRotationX = 0;
     
+    Vector3 DefaultPosition;
+    float cameraMoveX;
+    float cameraMoveY;
+
+    float _time = 0f;
+    
     enum HitDirection
     {
         Forward,
@@ -29,6 +39,7 @@ public partial class PlayerCamera : Camera3D
     public override void _Ready()
     {
         DefaultRotateZ = this.Rotation.Z;
+        DefaultPosition = this.Position;
     }
 
 	void HitCamera(HitDirection HitDir, float HitStrength) 
@@ -52,7 +63,7 @@ public partial class PlayerCamera : Camera3D
         float PlayerSpeedOnlyY = (Player.Velocity with {X = 0f, Z = 0f}).Length();
         Vector2 PlayerDirection = (Vector2)Player.Get("Direction");
 
-        if (PlayerSpeed > 5.5f)
+        if ((bool)Player.Get("IsRuning"))
         {
             this.Fov = Mathf.MoveToward(this.Fov, SprintFov, FovAcceleration);
         }
@@ -84,6 +95,27 @@ public partial class PlayerCamera : Camera3D
 
         );
         
+
+
+        if(PlayerSpeed > 0.01f)
+        {
+            _time += (float)delta * timeUpdateSpeed;
+        }
+        else
+        {
+            _time = Mathf.Lerp(_time, 0f, (float)delta * TimeReturnSpeed);
+        }
+        if (_time < 0.01f)
+        {
+            _time = Mathf.Floor(_time);
+        }
+
+        cameraMoveX = (float)Mathf.Sin(_time * 0.8) * -BobAmplitudeX * PlayerSpeed;
+        cameraMoveY = Mathf.Abs((float)Mathf.Sin(_time * 0.8) * BobAmplitudeY * PlayerSpeed) * -1;
+
+        Vector3 CameraBobing = new Vector3(cameraMoveX, cameraMoveY, this.Position.Z);
+
+        this.Position = DefaultPosition + CameraBobing;
         
         HitCamera(HitDirection.Right, 1f);
         
