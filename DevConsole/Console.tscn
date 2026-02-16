@@ -1,0 +1,38 @@
+[gd_scene format=3 uid="uid://c664076vb1eoy"]
+
+[ext_resource type="Script" uid="uid://bm0kseax3rp6t" path="res://DevConsole/Console.cs" id="1_sc8b7"]
+[ext_resource type="Script" uid="uid://rwrw3ocfsf1x" path="res://DevConsole/ConsoleCommands.cs" id="2_rhxa2"]
+
+[node name="Console" type="CanvasLayer" unique_id=125167985]
+script = ExtResource("1_sc8b7")
+metadata/_edit_vertical_guides_ = [-17.0, 1.0]
+metadata/_edit_horizontal_guides_ = [200.0, 3.0]
+
+[node name="Commands" type="Node" parent="." unique_id=127927821]
+script = ExtResource("2_rhxa2")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1057458131]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="VBoxContainer" unique_id=889194138]
+self_modulate = Color(1, 1, 1, 0.47058824)
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 25.0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="VBoxContainer/Panel" unique_id=1949404471]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+bbcode_enabled = true
+
+[node name="LineEdit" type="LineEdit" parent="VBoxContainer" unique_id=797501945]
+layout_mode = 2
+clear_button_enabled = true
