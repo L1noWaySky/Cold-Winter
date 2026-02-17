@@ -8,12 +8,20 @@
 
 config_version=5
 
+[animation]
+
+compatibility/default_parent_skeleton_in_mesh_instance_3d=true
+
 [application]
 
 config/name="ColdWinter"
 config/tags=PackedStringArray("futuregame")
 run/main_scene="uid://c3gbpnxcprsqj"
-config/features=PackedStringArray("4.4", "C#", "Mobile")
+config/features=PackedStringArray("4.6", "C#", "Mobile")
+
+[autoload]
+
+Console="*uid://c664076vb1eoy"
 
 [display]
 

@@ -1,13 +1,19 @@
 using Godot;
 using System;
-using System.Security.Cryptography;
+using Godot.Collections;
 
 public partial class Console : CanvasLayer
 {
+
     public LineEdit PrintLine;
     public RichTextLabel OutLabel;
     CommandSystem cs;
+
+    [ExportGroup("Hide Consoole Key")]
+    [Export] public StringName ActionName = "HideConsole";
+    [Export] public Key ActionKey = Key.F12;
     
+    InputEventKey TargetAction;
 
     public override void _Ready()
     {
@@ -17,6 +23,14 @@ public partial class Console : CanvasLayer
         OutLabel = GetNode<RichTextLabel>("VBoxContainer/Panel/RichTextLabel");
         PrintLine.TextSubmitted += OnLineEntered;
         cs = new();
+        TargetAction = new();
+        TargetAction.Keycode = ActionKey;
+
+        if (InputMap.HasAction(ActionName) == false) 
+        {
+            InputMap.AddAction(ActionName);
+            InputMap.ActionAddEvent(ActionName, TargetAction);
+        }
         
         PrintLine.CallDeferred(LineEdit.MethodName.GrabFocus);
     }
@@ -44,11 +58,19 @@ public partial class Console : CanvasLayer
         if (@event.IsActionPressed("HideConsole"))
         {
             this.Visible = !Visible;
+
         }
+    }
+
+    public void HideConsole()
+    {
+        
     }
 
 
 
-    [Command("/clear")] public void ClearConsole() => GD.Print(OutLabel.Text);
+
+
+    [Command("/clear")] public void ClearConsole() => OutLabel.Clear();
 
 }

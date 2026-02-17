@@ -6,37 +6,27 @@ public partial class PlayerHeadRotate : Node3D
 	[Export] float Sens = 2;
 	Node3D PlayerCameraRotateX;
 	float RotationX = 0f;
-    public bool IsCameraRotate = true;
+
+    [Export] ControlScript controlScript;
 	
 
 
 	public override void _Ready()
     {
         PlayerCameraRotateX = this.GetChild<Node3D>(0);
-		if (IsCameraRotate) {Input.MouseMode = Input.MouseModeEnum.Captured;}
+		if (controlScript.CanControl) {Input.MouseMode = Input.MouseModeEnum.Captured;}
+
+        controlScript.ControlIsSwitch += SwitchBool;
     }
 	public override void _Process(double delta)
     {
-        if (Input.IsActionJustPressed("Escape"))
-        {
-            IsCameraRotate = !IsCameraRotate;
-
-            if (IsCameraRotate)
-            {
-                Input.MouseMode = Input.MouseModeEnum.Captured;
-            }
-            else
-            {
-                Input.MouseMode = Input.MouseModeEnum.Visible;
-            }
-            
-        }
+        
     }
 
 
     public override void _UnhandledInput(InputEvent @ThisEvent)
     {
-        if (@ThisEvent is InputEventMouseMotion MouseMotionNow && IsCameraRotate)
+        if (@ThisEvent is InputEventMouseMotion MouseMotionNow && controlScript.CanControl)
         {
             this.RotateY(-MouseMotionNow.Relative.X * (0.001f * Sens));
 
@@ -45,6 +35,18 @@ public partial class PlayerHeadRotate : Node3D
 			Vector3 newRotate = PlayerCameraRotateX.Rotation;
 			newRotate.X = RotationX;
 			PlayerCameraRotateX.Rotation = newRotate;
+        }
+    }
+
+    void SwitchBool()
+    {
+        if (controlScript.CanControl)
+        {
+            Input.MouseMode = Input.MouseModeEnum.Captured;
+        }
+        else
+        {
+            Input.MouseMode = Input.MouseModeEnum.Visible;
         }
     }
 

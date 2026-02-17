@@ -2,9 +2,11 @@ using Godot;
 
 public partial class Hud : Control
 {
+	[Export] Entity PlayerScript;
 	[Export] Control Aim;
 	[Export] public AnimatedSprite2D AimVisual;
 	[Export] public Sprite2D Hand;
+	[Export] public Label HP;
 	
 
 	bool isAim;
@@ -29,15 +31,21 @@ public partial class Hud : Control
 			Hand.Visible = value;
 		}
 	}
+	
+	
 
     public override void _Ready()
     {
         base._Ready();
-
+	
+		PlayerScript.Data.HealthIsUpdate += Update;
     }
 
 
-
+	void Update()
+	{
+		HP.Text = PlayerScript.Data.CurrentHealth.ToString();
+	}
 
 	
 }

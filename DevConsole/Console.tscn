@@ -1,9 +1,11 @@
 [gd_scene format=3 uid="uid://c664076vb1eoy"]
 
-[ext_resource type="Script" uid="uid://bm0kseax3rp6t" path="res://DevConsole/Console.cs" id="1_sc8b7"]
-[ext_resource type="Script" uid="uid://rwrw3ocfsf1x" path="res://DevConsole/ConsoleCommands.cs" id="2_rhxa2"]
+[ext_resource type="Script" uid="uid://58revjom25kd" path="res://DevConsole/Console.cs" id="1_sc8b7"]
+[ext_resource type="Script" uid="uid://b7pngxg0gbopd" path="res://DevConsole/ConsoleCommands.cs" id="2_rhxa2"]
 
 [node name="Console" type="CanvasLayer" unique_id=125167985]
+layer = 2
+visible = false
 script = ExtResource("1_sc8b7")
 metadata/_edit_vertical_guides_ = [-17.0, 1.0]
 metadata/_edit_horizontal_guides_ = [200.0, 3.0]
@@ -32,7 +34,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 bbcode_enabled = true
+context_menu_enabled = true
 
 [node name="LineEdit" type="LineEdit" parent="VBoxContainer" unique_id=797501945]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
+size_flags_vertical = 3
 clear_button_enabled = true

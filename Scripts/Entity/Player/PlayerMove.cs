@@ -11,6 +11,7 @@ public partial class PlayerMove : CharacterBody3D
 	[Export] Node3D Head;
     [Export] RayCast3D CheckForSquat;
     [Export] Timer _timer;
+    [Export] ControlScript controlScript;
     [ExportGroup("Acceleration")]
         [Export] float acceleration = 5f;
         [Export] float accelerationAir = 2f;
@@ -33,11 +34,11 @@ public partial class PlayerMove : CharacterBody3D
         [ExportGroup("Endurance/Recovery")]
             [Export] float WaitTime = 3f;
             [Export] float RecoveryPay = 10f;
-    protected bool IsSquat { get; private set; }
-    protected bool IsMoving { get; private set; }
-    protected bool IsRuning { get; private set; }
-    protected bool CanControl { get; set; }
-    protected bool CanEnduranceRecovery { get; private set; }
+    public bool IsSquat { get; private set; }
+    public bool IsMoving { get; private set; }
+    public bool IsRuning { get; private set; }
+    public bool IsCanInputDir {get; set;}
+    public bool CanEnduranceRecovery { get; private set; }
     protected float SpeedY { get => (this.Velocity with {X = 0, Z = 0}).Length(); }
     protected float SpeedXZ { get => (this.Velocity with { Y = 0 }).Length(); }
     Vector3 LastMove = Vector3.Zero;
@@ -69,7 +70,7 @@ public partial class PlayerMove : CharacterBody3D
         IsSquat = false;
         IsMoving = false;
         IsRuning = false;
-        CanControl = true;
+        IsCanInputDir = true;
         CanEnduranceRecovery = true;
         CurrentEndurance = EnduranceMax;
     }
@@ -114,7 +115,7 @@ public partial class PlayerMove : CharacterBody3D
                 decelerationAir
             );
         
-        if (Input.IsActionJustPressed("CntrL") && this.IsOnFloor())
+        if (Input.IsActionJustPressed("CntrL") && this.IsOnFloor() && controlScript.CanControl)
         {
             if (!CheckForSquat.IsColliding()) { 
                 IsSquat = !IsSquat; 
@@ -144,15 +145,24 @@ public partial class PlayerMove : CharacterBody3D
             if (IsSquat != false) IsSquat = false;
         }
 
-        if (Input.IsActionJustPressed("Space") && this.IsOnFloor() && IsSquat==false && CurrentEndurance>100)
-        {
-            _Velocity.Y = Jump;
-            this.EmitSignal(SignalName.PlayerJumped);
-        }
+        
         #endregion
-        #region Движение и направление 
-        if (this.CanControl) Direction = Input.GetVector("A", "D", "W", "S").Normalized();
-		_Velocity = Head.Basis * new Vector3(
+        #region Движение, направление и прыжок
+        if (controlScript.CanControl)
+        {
+            // Jump
+            if (Input.IsActionJustPressed("Space") && this.IsOnFloor() && IsSquat==false && CurrentEndurance>100)
+            {
+                _Velocity.Y = Jump;
+                this.EmitSignal(SignalName.PlayerJumped);
+            }
+            
+            // Input Direction
+            if (this.IsCanInputDir) Direction = Input.GetVector("A", "D", "W", "S").Normalized();
+            
+        }
+        
+        _Velocity = Head.Basis * new Vector3(
             currentSpeed * Direction.X,
             _Velocity.Y,
             currentSpeed * Direction.Y
